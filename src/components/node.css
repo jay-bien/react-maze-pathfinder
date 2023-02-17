@@ -1,0 +1,24 @@
+.node {
+
+    border: 1px solid rebeccapurple;
+    flex: 1;
+    aspect-ratio: 1;
+    border-radius: 100%;
+    transition: all .7s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+
+}
+.node:hover{
+    cursor: pointer;
+    transform: scale(1.1);
+}
+.node.blocked{
+    background-color: brown;
+}
+
+.node.explored{
+    background-color: green;
+}
+.node.robot{
+    background-color: burlywood;
+}

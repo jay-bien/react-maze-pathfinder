@@ -1,5 +1,5 @@
-import Box from './box';
+import Node from './node';
 
 export {
-    Box
+    Node
 }

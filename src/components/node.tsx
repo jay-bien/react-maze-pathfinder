@@ -1,11 +1,11 @@
 import React from 'react'
-import './box.css'
+import './node.css'
 
 
-const box = ({ blocked, onBoxClick, r, c }: BoxProps) => {
+const node = ({ blocked, onBoxClick, r, c }: NodeProps) => {
   return (
     <div 
-    className={`box ${blocked ? 'blocked':''}`}
+    className={`node ${blocked ? 'blocked':''}`}
     onClick={ ()=> onBoxClick(r, c)}
     >
 
@@ -14,10 +14,10 @@ const box = ({ blocked, onBoxClick, r, c }: BoxProps) => {
 }
 
 
-export default box;
+export default node;
 
 
-interface BoxProps {
+interface NodeProps {
     blocked: boolean,
     onBoxClick: clickHandler;
     r: number,

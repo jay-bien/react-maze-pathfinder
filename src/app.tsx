@@ -2,7 +2,7 @@ import { useState, useEffect } from 'preact/hooks'
 import preactLogo from './assets/preact.svg'
 import './app.css'
 
-import { Box } from './components';
+import { Node } from './components';
 
 
 
@@ -20,7 +20,7 @@ export function App() {
   }
 
   useEffect(()=>{
-    const initGrid = new Array(80).fill(null).map( el => { return el = new Array(50).fill( Status.empty ) })
+    const initGrid = new Array(30).fill(null).map( el => { return el = new Array(50).fill( Status.empty ) })
     setGrid( initGrid );
     return ()=>{}
   },[])
@@ -33,7 +33,7 @@ export function App() {
             <div className={'row'}> 
               {
               row.map( (el, colIndex) => 
-                <Box blocked={ el === Status.blocked ? true:false} onBoxClick={blockBox} r={rowIndex} c={colIndex}/>)
+                <Node blocked={ el === Status.blocked ? true:false} onBoxClick={blockBox} r={rowIndex} c={colIndex}/>)
               }
             </div>
           )
