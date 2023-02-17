@@ -21,11 +21,17 @@ export function App() {
 
   useEffect(()=>{
     const initGrid = new Array(30).fill(null).map( el => { return el = new Array(50).fill( Status.empty ) })
+    initGrid[0][0] = Status.start;
+    initGrid[ initGrid.length - 1][ initGrid[0].length - 1 ] = Status.end;
     setGrid( initGrid );
+
     return ()=>{}
   },[])
   return (
     <>
+    <div className={'header'}>
+
+    </div>
     <div className='grid'>
             {
         grid?.map( (row, rowIndex) => {
@@ -33,7 +39,12 @@ export function App() {
             <div className={'row'}> 
               {
               row.map( (el, colIndex) => 
-                <Node blocked={ el === Status.blocked ? true:false} onBoxClick={blockBox} r={rowIndex} c={colIndex}/>)
+                <Node 
+                  blocked={ el === Status.blocked ? true:false} 
+                  onBoxClick={blockBox} r={rowIndex} c={colIndex}
+                  start={ el === Status.start ? true: false}
+                  end={ el === Status.end ? true: false }
+                  />)
               }
             </div>
           )
@@ -49,5 +60,7 @@ export function App() {
 
 enum Status {
   empty = 0,
+  start=1,
+  end=5,
   blocked = 2,
 }

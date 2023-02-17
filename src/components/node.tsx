@@ -2,10 +2,19 @@ import React from 'react'
 import './node.css'
 
 
-const node = ({ blocked, onBoxClick, r, c }: NodeProps) => {
+const node = ({ blocked, onBoxClick, r, c, start, end }: NodeProps) => {
+
+  function generateClassnames(){
+    let classnames = `node `;
+    blocked ? classnames+= 'blocked ': null;
+    start ? classnames += 'start ': null;
+    end ? classnames += 'end ': null;
+
+    return classnames
+  }
   return (
     <div 
-    className={`node ${blocked ? 'blocked':''}`}
+    className={generateClassnames()}
     onClick={ ()=> onBoxClick(r, c)}
     >
 
@@ -19,6 +28,8 @@ export default node;
 
 interface NodeProps {
     blocked: boolean,
+    start: boolean,
+    end: boolean,
     onBoxClick: clickHandler;
     r: number,
     c: number

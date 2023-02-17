@@ -15,7 +15,12 @@
 .node.blocked{
     background-color: brown;
 }
-
+.node.start{
+    background-color: purple;
+}
+.node.end{
+    background-color: aqua;
+}
 .node.explored{
     background-color: green;
 }
