@@ -9,6 +9,7 @@ import { Node } from './components';
 export function App() {
   const [count, setCount] = useState(0);
   const [grid, setGrid ] = useState<number[][]>([[]]);
+  const [ history, setHistory ] = useState<{r:number, c:number}[]>([]);
 
 
   function toggleBlock(row:number, col: number):void{
@@ -18,22 +19,38 @@ export function App() {
     setGrid( newGrid );
   }
 
-function bfs( matrix: number[][], r:number, c:number, memo:{[key:string]: boolean}){
+  function search(){
+    dfs( [...grid], 0, 0, {})
+  }
+
+function dfs( matrix: number[][], r:number, c:number, memo:{[key:string]: boolean}){
   //check for out of bounds
-  if( r < 0 || r >= matrix.length) return;
-  if( c < 0 || c >= matrix[r].length) return;
+  if( r < 0 || r >= matrix.length) return ;
+  if( c < 0 || c >= matrix[r].length) return ;
   // check if we visited this before
-  if(`${r},${c}` in memo) return;
+  if(`${r},${c}` in memo) return ;
+  //check if path is blocked
+  if(matrix[r][c] === Status.blocked) return;
 
   //check if we reached the end
-
+  if( matrix[r][c] === Status.end ) {
+    // end code
+    return;
+  }
 
   //mark as visited
   const key = `${r},${c}`;
   memo[key] = true;
+  matrix[r][c] = Status.explored;
+  history.push({r,c})
+  setGrid( matrix );
 
   //recurse in all directions
-
+  dfs( matrix, r+1, c, memo);
+  dfs( matrix, r-1, c, memo);
+  dfs( matrix, r, c+1, memo);
+  dfs( matrix, r, c-1, memo);
+  return;
 }
 
   useEffect(()=>{
@@ -47,7 +64,12 @@ function bfs( matrix: number[][], r:number, c:number, memo:{[key:string]: boolea
   return (
     <>
     <div className={'header'}>
-
+      {
+        history.map( ({r,c}) =>{
+          return(<p>{r}, {c}</p>)
+        })
+      }
+      <button onClick={()=>{ search()}}> Start Searrch </button>
     </div>
     <div className='grid'>
             {
@@ -61,6 +83,7 @@ function bfs( matrix: number[][], r:number, c:number, memo:{[key:string]: boolea
                   onBoxClick={toggleBlock} r={rowIndex} c={colIndex}
                   start={ el === Status.start ? true: false}
                   end={ el === Status.end ? true: false }
+                  visited={ el === Status.explored ? true : false}
                   />)
               }
             </div>
@@ -80,6 +103,7 @@ enum Status {
   start=1,
   end=5,
   blocked = 2,
+  explored=3,
 }
 
 type Memo = {
