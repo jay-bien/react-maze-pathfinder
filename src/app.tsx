@@ -11,13 +11,30 @@ export function App() {
   const [grid, setGrid ] = useState<number[][]>([[]]);
 
 
-  function blockBox(row:number, col: number):void{
-
+  function toggleBlock(row:number, col: number):void{
     let newGrid: number[][] = [...grid];
     newGrid[row][col] = Status.blocked;
     console.log("CLICK");
     setGrid( newGrid );
   }
+
+function bfs( matrix: number[][], r:number, c:number, memo:{[key:string]: boolean}){
+  //check for out of bounds
+  if( r < 0 || r >= matrix.length) return;
+  if( c < 0 || c >= matrix[r].length) return;
+  // check if we visited this before
+  if(`${r},${c}` in memo) return;
+
+  //check if we reached the end
+
+
+  //mark as visited
+  const key = `${r},${c}`;
+  memo[key] = true;
+
+  //recurse in all directions
+
+}
 
   useEffect(()=>{
     const initGrid = new Array(30).fill(null).map( el => { return el = new Array(50).fill( Status.empty ) })
@@ -41,7 +58,7 @@ export function App() {
               row.map( (el, colIndex) => 
                 <Node 
                   blocked={ el === Status.blocked ? true:false} 
-                  onBoxClick={blockBox} r={rowIndex} c={colIndex}
+                  onBoxClick={toggleBlock} r={rowIndex} c={colIndex}
                   start={ el === Status.start ? true: false}
                   end={ el === Status.end ? true: false }
                   />)
@@ -63,4 +80,8 @@ enum Status {
   start=1,
   end=5,
   blocked = 2,
+}
+
+type Memo = {
+  [key:string]: boolean
 }
