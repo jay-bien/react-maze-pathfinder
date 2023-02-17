@@ -1,32 +1,53 @@
-import { useState } from 'preact/hooks'
+import { useState, useEffect } from 'preact/hooks'
 import preactLogo from './assets/preact.svg'
 import './app.css'
 
-export function App() {
-  const [count, setCount] = useState(0)
+import { Box } from './components';
 
+
+
+export function App() {
+  const [count, setCount] = useState(0);
+  const [grid, setGrid ] = useState<number[][]>([[]]);
+
+
+  function blockBox(row:number, col: number):void{
+
+    let newGrid: number[][] = [...grid];
+    newGrid[row][col] = Status.blocked;
+    console.log("CLICK");
+    setGrid( newGrid );
+  }
+
+  useEffect(()=>{
+    const initGrid = new Array(80).fill(null).map( el => { return el = new Array(50).fill( Status.empty ) })
+    setGrid( initGrid );
+    return ()=>{}
+  },[])
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" class="logo" alt="Vite logo" />
-        </a>
-        <a href="https://preactjs.com" target="_blank">
-          <img src={preactLogo} class="logo preact" alt="Preact logo" />
-        </a>
-      </div>
-      <h1>Vite + Preact</h1>
-      <div class="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/app.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p class="read-the-docs">
-        Click on the Vite and Preact logos to learn more
-      </p>
+    <div className='grid'>
+            {
+        grid?.map( (row, rowIndex) => {
+          return( 
+            <div className={'row'}> 
+              {
+              row.map( (el, colIndex) => 
+                <Box blocked={ el === Status.blocked ? true:false} onBoxClick={blockBox} r={rowIndex} c={colIndex}/>)
+              }
+            </div>
+          )
+        })
+      }
+    </div>
+
     </>
   )
+}
+
+
+
+enum Status {
+  empty = 0,
+  blocked = 2,
 }
