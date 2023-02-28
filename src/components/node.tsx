@@ -1,8 +1,8 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import './node.css'
 
 
-const node = ({ blocked, onBoxClick, r, c, start, end, visited }: NodeProps) => {
+const node = ({ blocked, onNodeClick, onNodeDrag, r, c, start, end, visited }: NodeProps) => {
 
   function generateClassnames(){
     let classnames = `node `;
@@ -13,12 +13,18 @@ const node = ({ blocked, onBoxClick, r, c, start, end, visited }: NodeProps) => 
 
     return classnames
   }
+
+
+
+
   return (
     <div 
     className={generateClassnames()}
-    onClick={ ()=> onBoxClick(r, c)}
+    onClick={ ()=> onNodeClick(r, c)}
+    onDrag={ ()=> onNodeDrag(r, c)}
+    data-r={r}
+    data-c={c}
     >
-
     </div>
   )
 }
@@ -32,9 +38,11 @@ interface NodeProps {
     visited: boolean,
     start: boolean,
     end: boolean,
-    onBoxClick: clickHandler;
+    onNodeClick: clickHandler;
+    onNodeDrag: dragHandler,
     r: number,
     c: number
 }
 
 type clickHandler = (row:number, col:number)=>void;
+type dragHandler = (row:number, col:number) => void;

@@ -19,22 +19,40 @@ export function App() {
     setGrid( newGrid );
   }
 
+  
   function search(){
-    dfs( [...grid], 0, 0, {})
+    dfs( [...grid], 0, 0, {}, [])
   }
 
-function dfs( matrix: number[][], r:number, c:number, memo:{[key:string]: boolean}){
+function dfs( matrix: number[][], r:number, c:number, memo:{[key:string]: boolean}, path:{r:number, c:number}[]){
   //check for out of bounds
-  if( r < 0 || r >= matrix.length) return ;
-  if( c < 0 || c >= matrix[r].length) return ;
+  if( r < 0 || r >= matrix.length) {
+    path.pop();
+    return
+  } ;
+  if( c < 0 || c >= matrix[r].length) {
+    path.pop();
+    return
+  };
   // check if we visited this before
-  if(`${r},${c}` in memo) return ;
+  if(`${r},${c}` in memo) {
+    path.pop(); 
+    return;
+  };
   //check if path is blocked
-  if(matrix[r][c] === Status.blocked) return;
+  if(matrix[r][c] === Status.blocked) {
+    path.pop();
+    return;
+  };
+
+  //add curr node to path history
 
   //check if we reached the end
   if( matrix[r][c] === Status.end ) {
     // end code
+    if( !history.length) setHistory( path );
+    if(path.length < history.length) setHistory( path );
+    console.log("found")
     return;
   }
 
@@ -42,15 +60,31 @@ function dfs( matrix: number[][], r:number, c:number, memo:{[key:string]: boolea
   const key = `${r},${c}`;
   memo[key] = true;
   matrix[r][c] = Status.explored;
-  history.push({r,c})
+  path.push({r, c});
   setGrid( matrix );
 
   //recurse in all directions
-  dfs( matrix, r+1, c, memo);
-  dfs( matrix, r-1, c, memo);
-  dfs( matrix, r, c+1, memo);
-  dfs( matrix, r, c-1, memo);
+  dfs( matrix, r+1, c, memo, [...path]);
+  dfs( matrix, r-1, c, memo, [...path]);
+  dfs( matrix, r, c+1, memo, [...path]);
+  dfs( matrix, r, c-1, memo, [...path]);
   return;
+}
+function attachDragListener( el: Element ){
+  console.log( el )
+  el.addEventListener( 'dragover', (event)=> {
+    console.log( el );
+    let r =parseInt( el.getAttribute('data-r')! );
+    let c = parseInt( el.getAttribute('data-c')! );
+    toggleBlock( r, c);
+    console.log(r, c )
+    
+
+  })
+}
+
+function onNodeDrag(r: number, c:number){
+
 }
 
   useEffect(()=>{
@@ -59,17 +93,22 @@ function dfs( matrix: number[][], r:number, c:number, memo:{[key:string]: boolea
     initGrid[ initGrid.length - 1][ initGrid[0].length - 1 ] = Status.end;
     setGrid( initGrid );
 
+
+    const nodes = document.querySelectorAll('.node');
+    nodes.forEach(attachDragListener);
+
     return ()=>{}
   },[])
   return (
     <>
     <div className={'header'}>
-      {
-        history.map( ({r,c}) =>{
-          return(<p>{r}, {c}</p>)
-        })
-      }
+
       <button onClick={()=>{ search()}}> Start Searrch </button>
+      {/* {history && history.length && history.map( (entry, index)=>{
+        return<p>{JSON.stringify( entry )}</p>
+      })} */}
+      { history.length }
+      
     </div>
     <div className='grid'>
             {
@@ -80,7 +119,8 @@ function dfs( matrix: number[][], r:number, c:number, memo:{[key:string]: boolea
               row.map( (el, colIndex) => 
                 <Node 
                   blocked={ el === Status.blocked ? true:false} 
-                  onBoxClick={toggleBlock} r={rowIndex} c={colIndex}
+                  onNodeClick={toggleBlock} r={rowIndex} c={colIndex}
+                  onNodeDrag={onNodeDrag}
                   start={ el === Status.start ? true: false}
                   end={ el === Status.end ? true: false }
                   visited={ el === Status.explored ? true : false}
